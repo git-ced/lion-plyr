@@ -1,12 +1,8 @@
 {
-  "version": "0.0.0",
-  "types": "dist/types/index.d.ts",
-  "main": "dist/cjs/index.js",
-  "module": "dist/esm/index.js",
-  "exports": {
-    "require": "./dist/cjs/index.js",
-    "import": "./dist/esm/index.js"
-  },
+  "version": "0.1.0",
+  "license": "MIT",
+  "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
   "files": [
     "dist",
     "src"
@@ -14,38 +10,52 @@
   "engines": {
     "node": ">=10"
   },
-  "license": "MIT",
-  "keywords": [
-    "pridepack"
-  ],
-  "name": "lion-plyr",
-  "devDependencies": {
-    "@testing-library/jest-dom": "^5.14.1",
-    "@testing-library/react": "^12.0.0",
-    "@testing-library/react-hooks": "^7.0.1",
-    "@types/jest": "^26.0.23",
-    "@types/node": "^16.0.0",
-    "@types/react": "^17.0.13",
-    "eslint": "^7.30.0",
-    "eslint-config-lxsmnsyc": "^0.2.3",
-    "pridepack": "^0.10.0",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
-    "react-test-renderer": "^17.0.2",
-    "tslib": "^2.3.0",
-    "typescript": "^4.3.5"
+  "scripts": {
+    "start": "tsdx watch",
+    "build": "tsdx build",
+    "test": "tsdx test --passWithNoTests",
+    "lint": "tsdx lint",
+    "prepare": "tsdx build",
+    "size": "size-limit",
+    "analyze": "size-limit --why"
   },
   "peerDependencies": {
-    "react": "^16.8.0 || ^17.0.0",
-    "react-dom": "^16.8.0 || ^17.0.0"
+    "react": ">=16"
   },
-  "scripts": {
-    "prepublish": "pridepack clean && pridepack build",
-    "build": "pridepack build",
-    "type-check": "pridepack check",
-    "lint": "pridepack lint",
-    "test": "pridepack test --passWithNoTests",
-    "clean": "pridepack clean",
-    "watch": "pridepack watch"
+  "husky": {
+    "hooks": {
+      "pre-commit": "tsdx lint"
+    }
+  },
+  "prettier": {
+    "printWidth": 80,
+    "semi": true,
+    "singleQuote": true,
+    "trailingComma": "es5"
+  },
+  "name": "mylib",
+  "author": "Prince Neil Cedrick Castro",
+  "module": "dist/mylib.esm.js",
+  "size-limit": [
+    {
+      "path": "dist/mylib.cjs.production.min.js",
+      "limit": "10 KB"
+    },
+    {
+      "path": "dist/mylib.esm.js",
+      "limit": "10 KB"
+    }
+  ],
+  "devDependencies": {
+    "@size-limit/preset-small-lib": "^5.0.1",
+    "@types/react": "^17.0.13",
+    "@types/react-dom": "^17.0.8",
+    "husky": "^7.0.0",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "size-limit": "^5.0.1",
+    "tsdx": "^0.14.1",
+    "tslib": "^2.3.0",
+    "typescript": "^4.3.5"
   }
 }
