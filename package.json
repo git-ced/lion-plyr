@@ -36,6 +36,7 @@
   "name": "mylib",
   "author": "Prince Neil Cedrick Castro",
   "module": "dist/mylib.esm.js",
+  "private": false,
   "size-limit": [
     {
       "path": "dist/mylib.cjs.production.min.js",
