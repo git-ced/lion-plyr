@@ -33,7 +33,19 @@
     "singleQuote": true,
     "trailingComma": "es5"
   },
-  "name": "mylib",
+  "name": "lion-plyr",
+  "keywords": [
+    "lion-plyr",
+    "plyr",
+    "javascript",
+    "react",
+    "react-video",
+    "player",
+    "video",
+    "hls",
+    "youtube",
+    "vimeo"
+  ],
   "author": "Prince Neil Cedrick Castro",
   "module": "dist/mylib.esm.js",
   "private": false,
