@@ -117,7 +117,7 @@ export const useHlsPlyr = ({ source, options }: ILionPlyrProps) => {
     };
   }, [player]);
 
-  return { ref };
+  return ref;
 };
 
 export const usePlyr = ({ source, options }: ILionPlyrProps) => {
@@ -143,11 +143,11 @@ export const usePlyr = ({ source, options }: ILionPlyrProps) => {
     };
   }, [player]);
 
-  return { ref };
+  return ref;
 };
 
 export const LionPlyr = ({ source, options }: ILionPlyrProps) => {
-  const { ref } = usePlyr({ source, options });
+  const ref = usePlyr({ source, options });
 
   return (
     <UncontrolledLionPlyr ref={ref} />
@@ -155,7 +155,7 @@ export const LionPlyr = ({ source, options }: ILionPlyrProps) => {
 };
 
 export const LionHlsPlyr = ({ source, options }: ILionPlyrProps) => {
-  const { ref } = useHlsPlyr({ source, options });
+  const ref = useHlsPlyr({ source, options });
 
   return (
     <UncontrolledLionPlyr ref={ref} />
