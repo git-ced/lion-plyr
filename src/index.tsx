@@ -14,7 +14,7 @@ window.hls = window.hls || {};
 
 export interface ILionPlyrProps {
   source: Plyr.SourceInfo;
-  options: Plyr.Options;
+  options?: Plyr.Options;
 }
 
 export type HTMLPlyrVideoElement = HTMLVideoElement & { plyr?: Plyr }
