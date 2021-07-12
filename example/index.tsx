@@ -25,7 +25,10 @@ const hlsSrc = {
 };
 
 const HlsApp = () => {
-  const hlsRef = useHlsPlyr({ source: hlsSrc });
+  const hlsRef = useHlsPlyr({
+    source: hlsSrc,
+  });
+
   React.useEffect(() => {
     const hlsPlayer = hlsRef.current.plyr;
 
@@ -46,7 +49,9 @@ const HlsApp = () => {
 }
 
 const YoutubeApp = () => {
-  const youtubeRef = usePlyr({ source: videoSrc });
+  const youtubeRef = usePlyr({
+    source: videoSrc,
+  });
   React.useEffect(() => {
     const youtubePlayer = youtubeRef.current.plyr;
 

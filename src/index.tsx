@@ -30,7 +30,7 @@ export const UncontrolledLionPlyr = forwardRef<HTMLPlyrVideoElement | null>((_, 
 
 export const useHlsPlyr = ({ source, options }: ILionPlyrProps) => {
   const ref = useRef<HTMLPlyrVideoElement>(null);
-  const defaultOptions: Plyr.Options = {};
+  const defaultOptions: Plyr.Options = options ?? {};
   const currentSource = source.sources[0];
   const [player, setPlayer] = useState<Plyr>();
   const [currentHls, setCurrentHls] = useState<Hls>();
@@ -42,7 +42,7 @@ export const useHlsPlyr = ({ source, options }: ILionPlyrProps) => {
 
     if (currentSource) {
       if (!Hls.isSupported()) {
-        setPlayer(new Plyr('.player-react', options ?? defaultOptions));
+        setPlayer(new Plyr('.player-react', defaultOptions));
       } else {
         const hls = new Hls();
         setCurrentHls(hls);
@@ -78,7 +78,7 @@ export const useHlsPlyr = ({ source, options }: ILionPlyrProps) => {
           });
 
           // Initialize new Plyr player with quality options
-          setPlayer(new Plyr('.player-react', options ?? defaultOptions));
+          setPlayer(new Plyr('.player-react', defaultOptions));
         });
 
         hls.attachMedia(ref.current);
@@ -104,7 +104,7 @@ export const useHlsPlyr = ({ source, options }: ILionPlyrProps) => {
         window.hls = currentHls;
       }
     };
-  }, [source, options]);
+  }, [source]);
 
   useEffect(() => {
     if (ref.current && player) {
@@ -123,14 +123,14 @@ export const useHlsPlyr = ({ source, options }: ILionPlyrProps) => {
 
 export const usePlyr = ({ source, options }: ILionPlyrProps) => {
   const ref = useRef<HTMLPlyrVideoElement>(null);
-  const defaultOptions: Plyr.Options = {};
+  const defaultOptions: Plyr.Options = options ?? {};
   const [player, setPlayer] = useState<Plyr>();
 
   useEffect(() => {
-    const newPlayer = new Plyr('.player-react', options ?? defaultOptions);
+    const newPlayer = new Plyr('.player-react', defaultOptions);
     newPlayer.source = source;
     setPlayer(newPlayer);
-  }, [source, options]);
+  }, [source]);
 
   useEffect(() => {
     if (ref.current && player) {
