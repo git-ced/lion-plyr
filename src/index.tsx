@@ -1,6 +1,7 @@
 import React, { useRef, useEffect, forwardRef } from 'react';
 import Plyr from 'plyr';
 import Hls from 'hls.js';
+import Dash from 'dashjs';
 import './styles.css';
 
 export interface IUncontrolledPlayerProps {
@@ -54,7 +55,7 @@ export const useHlsPlyr = ({ source, options }: ILionPlyrProps) => {
 
       hls.on(Hls.Events.MANIFEST_PARSED, function () {
         hls.on(Hls.Events.LEVEL_SWITCHED, function (_, data) {
-          var span = document.querySelector(
+          let span = document.querySelector(
             ".plyr__menu__container [data-plyr='quality'][value='0'] span"
           );
           if (span) {
@@ -108,8 +109,94 @@ export const useHlsPlyr = ({ source, options }: ILionPlyrProps) => {
     }
 
     return () => {
-      hls.detachMedia();
-      player.destroy();
+      if (hls) {
+        hls.detachMedia();
+      }
+      if (player) {
+        player.destroy();
+      }
+    }
+  }, [currentSource, defaultOptions, source]);
+
+  return ref;
+};
+
+export const useDashPlyr = ({ source, options }: ILionPlyrProps) => {
+  const ref = useRef<HTMLPlyrVideoElement>(null);
+  const defaultOptions: Plyr.Options = options ?? {};
+  const currentSource = source.sources[0];
+
+  useEffect(() => {
+    let dash = Dash.MediaPlayer().create();
+    let player: Plyr;
+
+    if (!window) {
+      return;
+    }
+
+    window.hls = window.hls || {};
+
+    if (!Dash.supportsMediaSource) {
+      const newPlayer = new Plyr('.player-react', defaultOptions);
+
+      if (ref.current) {
+        player = newPlayer;
+        ref.current.plyr = newPlayer;
+      }
+    } else {
+      if (ref.current) {
+        dash.initialize(
+          ref.current,
+          currentSource.src,
+          options?.autoplay ?? false,
+        );
+
+        dash.on('playbackMetaDataLoaded', () => {
+          let span = document.querySelector(
+            ".plyr__menu__container [data-plyr='quality'][value='0'] span"
+          );
+
+          if (span) {
+            span.innerHTML = 'AUTO';
+          }
+        })
+
+        const qualityOptions = [0, 360, 480, 560, 720, 1080];
+
+        const newOptions: Plyr.Options = {
+          ...defaultOptions,
+          quality: {
+            default: 720,
+            options: qualityOptions,
+            forced: true,
+            onChange: newQuality => {
+              dash.setQualityFor(
+                'video',
+                qualityOptions.indexOf(newQuality),
+                true,
+              );
+            }
+          },
+          i18n: {
+            qualityLabel: {
+              0: 'Auto',
+            },
+          },
+        }
+
+        const newPlayer = new Plyr('.player-react', newOptions);
+        player = newPlayer;
+        ref.current.plyr = newPlayer;
+      }
+    }
+
+    return () => {
+      if (dash) {
+        dash.reset();
+      }
+      if (player) {
+        player.destroy();
+      }
     }
   }, [currentSource, defaultOptions, source]);
 
@@ -130,7 +217,9 @@ export const usePlyr = ({ source, options }: ILionPlyrProps) => {
     }
 
     return () => {
-      player.destroy();
+      if (player) {
+        player.destroy();
+      }
     }
   }, [source]);
 
@@ -147,6 +236,14 @@ export const LionPlyr = ({ source, options }: ILionPlyrProps) => {
 
 export const LionHlsPlyr = ({ source, options }: ILionPlyrProps) => {
   const ref = useHlsPlyr({ source, options });
+
+  return (
+    <UncontrolledLionPlyr ref={ref} />
+  );
+};
+
+export const LionDashPlyr = ({ source, options }: ILionPlyrProps) => {
+  const ref = useDashPlyr({ source, options });
 
   return (
     <UncontrolledLionPlyr ref={ref} />
