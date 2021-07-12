@@ -11,7 +11,7 @@ declare global {
   interface Window { hls: Hls; }
 }
 
-window.hls = window.hls || {};
+window.hls = window?.hls || {};
 
 export interface ILionPlyrProps {
   source: Plyr.SourceInfo;
@@ -36,7 +36,7 @@ export const useHlsPlyr = ({ source, options }: ILionPlyrProps) => {
   const [currentHls, setCurrentHls] = useState<Hls>();
 
   useEffect(() => {
-    if (!ref.current) {
+    if (!ref.current || !window) {
       return;
     }
 
