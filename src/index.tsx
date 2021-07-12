@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, forwardRef } from 'react';
+import React, { useRef, useEffect, forwardRef } from 'react';
 import Plyr from 'plyr';
 import Hls from 'hls.js';
 import './styles.css';
@@ -10,8 +10,6 @@ export interface IUncontrolledPlayerProps {
 declare global {
   interface Window { hls: Hls; }
 }
-
-window.hls = window?.hls || {};
 
 export interface ILionPlyrProps {
   source: Plyr.SourceInfo;
@@ -32,55 +30,67 @@ export const useHlsPlyr = ({ source, options }: ILionPlyrProps) => {
   const ref = useRef<HTMLPlyrVideoElement>(null);
   const defaultOptions: Plyr.Options = options ?? {};
   const currentSource = source.sources[0];
-  const [player, setPlayer] = useState<Plyr>();
-  const [currentHls, setCurrentHls] = useState<Hls>();
 
   useEffect(() => {
-    if (!ref.current || !window) {
+    let hls: Hls;
+    let player: Plyr;
+    let newOptions: Plyr.Options;
+
+    if (!window) {
       return;
     }
 
-    if (currentSource) {
-      if (!Hls.isSupported()) {
-        setPlayer(new Plyr('.player-react', defaultOptions));
-      } else {
-        const hls = new Hls();
-        setCurrentHls(hls);
-        hls.loadSource(currentSource.src ?? '');
+    window.hls = window.hls || {};
 
-        hls.on(Hls.Events.MANIFEST_PARSED, function () {
-          const availableQualities = hls.levels.map(l => l.height);
-          availableQualities.unshift(0);
+    if (!Hls.isSupported()) {
+      const newPlayer = new Plyr('.player-react', defaultOptions);
 
-          defaultOptions.quality = {
-            default: 720,
-            options: availableQualities,
-            forced: true,
-            onChange: event => updateQuality(event)
-          };
-          defaultOptions.i18n = {
-            qualityLabel: {
-              0: 'Auto'
+      if (ref.current) {
+        player = newPlayer;
+        ref.current.plyr = newPlayer;
+      }
+    } else {
+      hls = new Hls();
+      hls.loadSource(currentSource.src);
+
+      const availableQualities = hls.levels.map(level => level.height);
+      availableQualities.unshift(0);
+
+      newOptions = {
+        ...defaultOptions,
+        quality: {
+          default: 720,
+          options: availableQualities,
+          forced: true,
+          onChange: event => updateQuality(event)
+        },
+        i18n: {
+          qualityLabel: {
+            0: 'Auto'
+          }
+        }
+      }
+
+      hls.on(Hls.Events.MANIFEST_PARSED, function () {
+        hls.on(Hls.Events.LEVEL_SWITCHED, function (_, data) {
+          var span = document.querySelector(
+            ".plyr__menu__container [data-plyr='quality'][value='0'] span"
+          );
+          if (span) {
+            if (hls.autoLevelEnabled) {
+              span.innerHTML = `AUTO (${hls.levels[data.level].height}p)`;
+            } else {
+              span.innerHTML = `AUTO`;
             }
-          };
-
-          hls.on(Hls.Events.LEVEL_SWITCHED, function (_, data) {
-            var span = document.querySelector(
-              ".plyr__menu__container [data-plyr='quality'][value='0'] span"
-            );
-            if (span) {
-              if (hls.autoLevelEnabled) {
-                span.innerHTML = `AUTO (${hls.levels[data.level].height}p)`;
-              } else {
-                span.innerHTML = `AUTO`;
-              }
-            }
-          });
-
-          // Initialize new Plyr player with quality options
-          setPlayer(new Plyr('.player-react', defaultOptions));
+          }
         });
+      });
 
+      const newPlayer = new Plyr('.player-react', newOptions);
+
+      if (ref.current) {
+        player = newPlayer;
+        ref.current.plyr = newPlayer;
         hls.attachMedia(ref.current);
         window.hls = hls;
       }
@@ -99,50 +109,31 @@ export const useHlsPlyr = ({ source, options }: ILionPlyrProps) => {
     }
 
     return () => {
-      if (currentHls) {
-        currentHls.detachMedia();
-        window.hls = currentHls;
-      }
-    };
-  }, [source]);
-
-  useEffect(() => {
-    if (ref.current && player) {
-      ref.current.plyr = player;
+      hls.detachMedia();
+      player.destroy();
     }
-
-    return () => {
-      if (player) {
-        player.destroy();
-      }
-    };
-  }, [player]);
+  }, [currentSource, defaultOptions, source]);
 
   return ref;
 };
 
 export const usePlyr = ({ source, options }: ILionPlyrProps) => {
   const ref = useRef<HTMLPlyrVideoElement>(null);
-  const defaultOptions: Plyr.Options = options ?? {};
-  const [player, setPlayer] = useState<Plyr>();
 
   useEffect(() => {
-    const newPlayer = new Plyr('.player-react', defaultOptions);
+    let player: Plyr;
+    const newPlayer = new Plyr('.player-react', options ?? {});
     newPlayer.source = source;
-    setPlayer(newPlayer);
-  }, [source]);
 
-  useEffect(() => {
-    if (ref.current && player) {
-      ref.current.plyr = player;
+    if (ref.current) {
+      player = newPlayer
+      ref.current.plyr = newPlayer;
     }
 
     return () => {
-      if (player) {
-        player.destroy();
-      }
-    };
-  }, [player]);
+      player.destroy();
+    }
+  }, [source]);
 
   return ref;
 };
