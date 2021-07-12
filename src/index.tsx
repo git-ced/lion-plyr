@@ -127,12 +127,12 @@ export const useDashPlyr = ({ source, options }: ILionPlyrProps) => {
   const currentSource = source.sources[0];
 
   useEffect(() => {
-    let dash = Dash.MediaPlayer().create();
-    let player: Plyr;
-
     if (!window) {
       return;
     }
+
+    let dash = Dash.MediaPlayer().create();
+    let player: Plyr;
 
     if (!Dash.supportsMediaSource) {
       const newPlayer = new Plyr('.player-react', defaultOptions);
