@@ -72,7 +72,11 @@
     "typescript": "^4.3.5"
   },
   "dependencies": {
+    "autoprefixer": "^10.3.0",
+    "cssnano": "^5.0.6",
     "hls.js": "^1.0.7",
-    "plyr": "^3.6.8"
+    "plyr": "^3.6.8",
+    "postcss": "^8.3.5",
+    "rollup-plugin-postcss": "^4.0.0"
   }
 }
