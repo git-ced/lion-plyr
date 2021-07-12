@@ -134,8 +134,6 @@ export const useDashPlyr = ({ source, options }: ILionPlyrProps) => {
       return;
     }
 
-    window.hls = window.hls || {};
-
     if (!Dash.supportsMediaSource) {
       const newPlayer = new Plyr('.player-react', defaultOptions);
 
