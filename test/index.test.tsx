@@ -1,6 +1,6 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import { LionPlyr, LionHlsPlyr } from '../src';
+import { LionPlyr, LionHlsPlyr, LionDashPlyr } from '../src';
 import Plyr from 'plyr';
 
 const videoSrc: Plyr.SourceInfo = {
@@ -24,6 +24,17 @@ const hlsSrc: Plyr.SourceInfo = {
   ]
 };
 
+
+const dashSrc: Plyr.SourceInfo = {
+  type: 'video',
+  sources: [
+    {
+      src: 'https://bitmovin-a.akamaihd.net/content/MI201109210084_1/mpds/f08e80da-bf1d-4e3d-8899-f0f6155f6efa.mpd',
+      type: 'application/dash+xml',
+    }
+  ]
+};
+
 describe('The Normal Plyr', () => {
   it('renders without crashing', () => {
     const div = document.createElement('div');
@@ -36,6 +47,14 @@ describe('The HLS Plyr', () => {
   it('renders without crashing', () => {
     const div = document.createElement('div');
     ReactDOM.render(<LionHlsPlyr source={hlsSrc} />, div);
+    ReactDOM.unmountComponentAtNode(div);
+  });
+});
+
+describe('The Dash Plyr', () => {
+  it('renders without crashing', () => {
+    const div = document.createElement('div');
+    ReactDOM.render(<LionDashPlyr source={dashSrc} />, div);
     ReactDOM.unmountComponentAtNode(div);
   });
 });
