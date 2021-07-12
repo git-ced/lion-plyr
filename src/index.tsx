@@ -34,7 +34,6 @@ export const useHlsPlyr = ({ source, options }: ILionPlyrProps) => {
   useEffect(() => {
     let hls: Hls;
     let player: Plyr;
-    let newOptions: Plyr.Options;
 
     if (!window) {
       return;
@@ -53,16 +52,43 @@ export const useHlsPlyr = ({ source, options }: ILionPlyrProps) => {
       hls = new Hls();
       hls.loadSource(currentSource.src);
 
-      const availableQualities = hls.levels.map(level => level.height);
-      availableQualities.unshift(0);
+      hls.on(Hls.Events.MANIFEST_PARSED, function () {
+        hls.on(Hls.Events.LEVEL_SWITCHED, function (_, data) {
+          var span = document.querySelector(
+            ".plyr__menu__container [data-plyr='quality'][value='0'] span"
+          );
+          if (span) {
+            if (hls.autoLevelEnabled) {
+              if (hls.levels[data.level].height > 1080) {
+                player.quality = 1080;
+                span.innerHTML = `AUTO (1080p)`;
+              } else {
+                span.innerHTML = `AUTO (${hls.levels[data.level].height}p)`;
+              }
+            } else {
+              span.innerHTML = `AUTO`;
+            }
+          }
+        });
+      });
 
-      newOptions = {
+      const newOptions: Plyr.Options = {
         ...defaultOptions,
         quality: {
           default: 720,
-          options: availableQualities,
+          options: [0, 360, 480, 560, 720, 1080],
           forced: true,
-          onChange: event => updateQuality(event)
+          onChange: newQuality => {
+            if (newQuality === 0) {
+              hls.currentLevel = -1;
+            } else {
+              hls.levels.forEach((level, levelIndex) => {
+                if (level.height === newQuality) {
+                  hls.currentLevel = levelIndex;
+                }
+              });
+            }
+          }
         },
         i18n: {
           qualityLabel: {
@@ -71,21 +97,6 @@ export const useHlsPlyr = ({ source, options }: ILionPlyrProps) => {
         }
       }
 
-      hls.on(Hls.Events.MANIFEST_PARSED, function () {
-        hls.on(Hls.Events.LEVEL_SWITCHED, function (_, data) {
-          var span = document.querySelector(
-            ".plyr__menu__container [data-plyr='quality'][value='0'] span"
-          );
-          if (span) {
-            if (hls.autoLevelEnabled) {
-              span.innerHTML = `AUTO (${hls.levels[data.level].height}p)`;
-            } else {
-              span.innerHTML = `AUTO`;
-            }
-          }
-        });
-      });
-
       const newPlayer = new Plyr('.player-react', newOptions);
 
       if (ref.current) {
@@ -93,18 +104,6 @@ export const useHlsPlyr = ({ source, options }: ILionPlyrProps) => {
         ref.current.plyr = newPlayer;
         hls.attachMedia(ref.current);
         window.hls = hls;
-      }
-    }
-
-    function updateQuality(newQuality: number) {
-      if (newQuality === 0) {
-        window.hls.currentLevel = -1;
-      } else {
-        window.hls.levels.forEach((level, levelIndex) => {
-          if (level.height === newQuality) {
-            window.hls.currentLevel = levelIndex;
-          }
-        });
       }
     }
 
