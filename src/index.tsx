@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect, forwardRef } from 'react';
 import Plyr from 'plyr';
 import Hls from 'hls.js';
+import './styles.css';
 
 export interface IUncontrolledPlayerProps {
   plyr: Plyr;
