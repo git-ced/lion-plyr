@@ -6,7 +6,7 @@ import {
   useHlsPlyr,
   useDashPlyr,
   usePlyr,
-} from '../.';
+} from '../src';
 
 const videoSrc = {
   type: 'video',
@@ -45,7 +45,7 @@ const HlsApp = () => {
   });
 
   React.useEffect(() => {
-    const hlsPlayer = hlsRef.current.plyr;
+    const hlsPlayer = hlsRef.current?.plyr;
 
     if (hlsPlayer) {
       hlsPlayer.on('timeupdate', event => {
@@ -68,7 +68,7 @@ const YoutubeApp = () => {
     source: videoSrc,
   });
   React.useEffect(() => {
-    const youtubePlayer = youtubeRef.current.plyr;
+    const youtubePlayer = youtubeRef.current?.plyr;
 
     if (youtubePlayer) {
       youtubePlayer.on('timeupdate', event => {
@@ -92,7 +92,7 @@ const DashApp = () => {
   });
 
   React.useEffect(() => {
-    const dashPlayer = dashRef.current.plyr;
+    const dashPlayer = dashRef.current?.plyr;
 
     if (dashPlayer) {
       dashPlayer.on('timeupdate', event => {
