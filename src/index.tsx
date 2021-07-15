@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, forwardRef } from 'react';
+import React, { useRef, useEffect, forwardRef, useMemo, useState } from 'react';
 import Plyr from 'plyr';
 import Hls from 'hls.js';
 import Dash from 'dashjs';
@@ -123,28 +123,27 @@ export const useHlsPlyr = ({ source, options }: ILionPlyrProps) => {
 
 export const useDashPlyr = ({ source, options }: ILionPlyrProps) => {
   const ref = useRef<HTMLPlyrVideoElement>(null);
-  const defaultOptions: Plyr.Options = options ?? {};
+  const dash = useMemo(() => Dash.MediaPlayer().create(), []);
   const currentSource = source.sources[0];
+  const defaultOptions: Plyr.Options = options ?? {};
+  const [qualityOptions, setQualityOptions] = useState<number[]>();
 
   useEffect(() => {
     if (!window) {
       return;
     }
 
-    let dash = Dash.MediaPlayer().create();
     let player: Plyr;
 
     window.dashjs = window.dashjs || {};
 
-    if (!Dash.supportsMediaSource) {
-      const newPlayer = new Plyr('.player-react', defaultOptions);
+    if (ref.current) {
+      if (!Dash.supportsMediaSource) {
+        const newPlayer = new Plyr('.player-react', defaultOptions);
 
-      if (ref.current) {
         player = newPlayer;
         ref.current.plyr = newPlayer;
-      }
-    } else {
-      if (ref.current) {
+      } else {
         dash.initialize(
           ref.current,
           currentSource.src,
@@ -159,46 +158,60 @@ export const useDashPlyr = ({ source, options }: ILionPlyrProps) => {
           if (span) {
             span.innerHTML = 'AUTO';
           }
+
+          const bitrateList = dash.getBitrateInfoListFor('video');
+
+          setQualityOptions(bitrateList.map(bitrate => bitrate.height));
         })
-
-        const qualityOptions = [0, 360, 480, 560, 720, 1080];
-
-        const newOptions: Plyr.Options = {
-          ...defaultOptions,
-          quality: {
-            default: 720,
-            options: qualityOptions,
-            forced: true,
-            onChange: newQuality => {
-              dash.setQualityFor(
-                'video',
-                qualityOptions.indexOf(newQuality),
-                true,
-              );
-            }
-          },
-          i18n: {
-            qualityLabel: {
-              0: 'Auto',
-            },
-          },
-        }
-
-        const newPlayer = new Plyr('.player-react', newOptions);
-        player = newPlayer;
-        ref.current.plyr = newPlayer;
       }
     }
 
     return () => {
-      if (dash) {
+      if (player) {
+        player.destroy();
+      }
+    }
+  }, [currentSource, defaultOptions])
+
+  useEffect(() => {
+    let player: Plyr;
+
+    if (qualityOptions && ref.current) {
+      const newOptions: Plyr.Options = {
+        ...defaultOptions,
+        quality: {
+          default: 720,
+          options: qualityOptions,
+          forced: true,
+          onChange: (newQuality) => {
+            dash.setQualityFor(
+              'video',
+              qualityOptions.indexOf(newQuality),
+              true,
+            );
+          }
+        },
+        i18n: {
+          qualityLabel: {
+            0: 'Auto',
+          },
+        },
+      }
+
+      const newPlayer = new Plyr('.player-react', newOptions);
+      player = newPlayer;
+      ref.current.plyr = newPlayer;
+    }
+
+    return () => {
+      if (dash && qualityOptions) {
         dash.reset();
       }
       if (player) {
         player.destroy();
       }
     }
-  }, [currentSource, defaultOptions, source]);
+  }, [qualityOptions]);
 
   return ref;
 };
