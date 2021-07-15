@@ -29,11 +29,12 @@ export const UncontrolledLionPlyr = forwardRef<HTMLPlyrVideoElement | null>((_, 
 
 export const useHlsPlyr = ({ source, options }: ILionPlyrProps) => {
   const ref = useRef<HTMLPlyrVideoElement>(null);
-  const defaultOptions: Plyr.Options = options ?? {};
   const currentSource = source.sources[0];
+  const hls = useMemo(() => new Hls(), []);
+  const defaultOptions: Plyr.Options = options ?? {};
+  const [qualityOptions, setQualityOptions] = useState<number[]>();
 
   useEffect(() => {
-    let hls: Hls;
     let player: Plyr;
 
     if (!window) {
@@ -42,42 +43,53 @@ export const useHlsPlyr = ({ source, options }: ILionPlyrProps) => {
 
     window.hls = window.hls || {};
 
-    if (!Hls.isSupported()) {
-      const newPlayer = new Plyr('.player-react', defaultOptions);
+    if (ref.current) {
+      if (!Hls.isSupported()) {
+        const newPlayer = new Plyr('.player-react', defaultOptions);
 
-      if (ref.current) {
         player = newPlayer;
         ref.current.plyr = newPlayer;
-      }
-    } else {
-      hls = new Hls();
-      hls.loadSource(currentSource.src);
+      } else {
+        hls.loadSource(currentSource.src);
 
-      hls.on(Hls.Events.MANIFEST_PARSED, function () {
-        hls.on(Hls.Events.LEVEL_SWITCHED, function (_, data) {
-          let span = document.querySelector(
-            ".plyr__menu__container [data-plyr='quality'][value='0'] span"
-          );
-          if (span) {
-            if (hls.autoLevelEnabled) {
-              if (hls.levels[data.level].height > 1080) {
-                player.quality = 1080;
-                span.innerHTML = `AUTO (1080p)`;
+        hls.on(Hls.Events.MANIFEST_PARSED, () => {
+          const availableQualities = [0, ...hls.levels.map((level) => level.height)]
+
+          setQualityOptions(availableQualities);
+
+          hls.on(Hls.Events.LEVEL_SWITCHED, (_, data) => {
+            let span = document.querySelector(
+              ".plyr__menu__container [data-plyr='quality'][value='0'] span"
+            );
+
+            if (span) {
+              if (hls.autoLevelEnabled) {
+                span.innerHTML = `AUTO (${hls.levels[data.level].height}p)`
               } else {
-                span.innerHTML = `AUTO (${hls.levels[data.level].height}p)`;
+                span.innerHTML = `AUTO`
               }
-            } else {
-              span.innerHTML = `AUTO`;
             }
-          }
+          });
         });
-      });
+      }
+    }
 
+    return () => {
+      if (player) {
+        player.destroy();
+      }
+    }
+  }, [hls])
+
+  useEffect(() => {
+    let player: Plyr;
+
+    if (qualityOptions && ref.current) {
       const newOptions: Plyr.Options = {
         ...defaultOptions,
         quality: {
           default: 720,
-          options: [0, 360, 480, 560, 720, 1080],
+          options: qualityOptions,
           forced: true,
           onChange: newQuality => {
             if (newQuality === 0) {
@@ -100,23 +112,22 @@ export const useHlsPlyr = ({ source, options }: ILionPlyrProps) => {
 
       const newPlayer = new Plyr('.player-react', newOptions);
 
-      if (ref.current) {
-        player = newPlayer;
-        ref.current.plyr = newPlayer;
-        hls.attachMedia(ref.current);
-        window.hls = hls;
-      }
+      player = newPlayer;
+      ref.current.plyr = newPlayer;
+      hls.attachMedia(ref.current);
+      window.hls = hls;
     }
 
+
     return () => {
-      if (hls) {
+      if (hls && qualityOptions) {
         hls.detachMedia();
       }
       if (player) {
         player.destroy();
       }
     }
-  }, [currentSource, defaultOptions, source]);
+  }, [hls, qualityOptions, defaultOptions]);
 
   return ref;
 };
@@ -171,7 +182,7 @@ export const useDashPlyr = ({ source, options }: ILionPlyrProps) => {
         player.destroy();
       }
     }
-  }, [currentSource, defaultOptions])
+  }, [dash, currentSource, defaultOptions])
 
   useEffect(() => {
     let player: Plyr;
@@ -211,7 +222,7 @@ export const useDashPlyr = ({ source, options }: ILionPlyrProps) => {
         player.destroy();
       }
     }
-  }, [qualityOptions]);
+  }, [dash, qualityOptions]);
 
   return ref;
 };
