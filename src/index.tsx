@@ -172,7 +172,7 @@ export const useDashPlyr = ({ source, options }: ILionPlyrProps) => {
 
           const bitrateList = dash.getBitrateInfoListFor('video');
 
-          setQualityOptions(bitrateList.map(bitrate => bitrate.height));
+          setQualityOptions([0, ...bitrateList.map(bitrate => bitrate.height)]);
         })
       }
     }
@@ -197,7 +197,7 @@ export const useDashPlyr = ({ source, options }: ILionPlyrProps) => {
           onChange: (newQuality) => {
             dash.setQualityFor(
               'video',
-              qualityOptions.indexOf(newQuality),
+              newQuality === 0 ? -1 : qualityOptions.indexOf(newQuality) - 1,
               true,
             );
           }
