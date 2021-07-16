@@ -6,7 +6,6 @@ import {
   useHlsPlyr,
   useDashPlyr,
   usePlyr,
-  HTMLPlyrVideoElement,
 } from '../src';
 
 const videoSrc = {
@@ -60,11 +59,13 @@ const HlsApp = () => {
   const hlsRef = useHlsPlyr({
     source: hlsSrc,
   });
+  const [loading, setLoading] = React.useState(true);
 
   React.useEffect(() => {
     const hlsPlayer = hlsRef.current?.plyr;
 
     if (hlsPlayer) {
+      setLoading(false);
       hlsPlayer.on('timeupdate', event => {
         const instance = event.detail.plyr;
         console.log(instance.currentTime);
@@ -75,7 +76,7 @@ const HlsApp = () => {
   return (
     <div>
       <h1>HLS Usage</h1>
-      <UncontrolledLionPlyr ref={hlsRef} />
+      <UncontrolledLionPlyr ref={hlsRef} isLoading={loading} />
     </div>
   );
 }
@@ -84,10 +85,13 @@ const YoutubeApp = () => {
   const youtubeRef = usePlyr({
     source: videoSrc,
   });
+  const [loading, setLoading] = React.useState(true);
+
   React.useEffect(() => {
     const youtubePlayer = youtubeRef.current?.plyr;
 
     if (youtubePlayer) {
+      setLoading(false);
       youtubePlayer.on('timeupdate', event => {
         const instance = event.detail.plyr;
         console.log(instance.currentTime);
@@ -98,7 +102,7 @@ const YoutubeApp = () => {
   return (
     <div>
       <h1>Youtube Usage</h1>
-      <UncontrolledLionPlyr ref={youtubeRef} />
+      <UncontrolledLionPlyr ref={youtubeRef} isLoading={loading} />
     </div>
   );
 }
@@ -107,10 +111,13 @@ const Mp4App = () => {
   const mp4Ref = usePlyr({
     source: mp4Src,
   });
+  const [loading, setLoading] = React.useState(true);
+
   React.useEffect(() => {
     const mp4Player = mp4Ref.current?.plyr;
 
     if (mp4Player) {
+      setLoading(false);
       mp4Player.on('timeupdate', event => {
         const instance = event.detail.plyr;
         console.log(instance.currentTime);
@@ -121,7 +128,7 @@ const Mp4App = () => {
   return (
     <div>
       <h1>MP4 Usage</h1>
-      <UncontrolledLionPlyr ref={mp4Ref} />
+      <UncontrolledLionPlyr ref={mp4Ref} isLoading={loading} />
     </div>
   );
 }
@@ -130,19 +137,13 @@ const DashApp = () => {
   const dashRef = useDashPlyr({
     source: dashSrc,
   })
-
-  const [timedRef, setTimedRef] = React.useState<React.RefObject<HTMLPlyrVideoElement>>();
-
-  React.useEffect(() => {
-    const timeout = setTimeout(() => {
-      setTimedRef(dashRef)
-    }, 10000)
-  }, [dashRef])
+  const [loading, setLoading] = React.useState(true);
 
   React.useEffect(() => {
     const dashPlayer = dashRef.current?.plyr;
 
     if (dashPlayer) {
+      setLoading(false);
       dashPlayer.on('timeupdate', event => {
         const instance = event.detail.plyr;
         console.log(instance.currentTime);
@@ -153,7 +154,7 @@ const DashApp = () => {
   return (
     <div>
       <h1>Dash Usage</h1>
-      <UncontrolledLionPlyr ref={timedRef} />
+      <UncontrolledLionPlyr ref={dashRef} isLoading={loading} />
     </div>
   );
 }
