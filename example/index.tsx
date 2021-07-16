@@ -6,6 +6,7 @@ import {
   useHlsPlyr,
   useDashPlyr,
   usePlyr,
+  HTMLPlyrVideoElement,
 } from '../src';
 
 const videoSrc = {
@@ -128,7 +129,15 @@ const Mp4App = () => {
 const DashApp = () => {
   const dashRef = useDashPlyr({
     source: dashSrc,
-  });
+  })
+
+  const [timedRef, setTimedRef] = React.useState<React.RefObject<HTMLPlyrVideoElement>>();
+
+  React.useEffect(() => {
+    const timeout = setTimeout(() => {
+      setTimedRef(dashRef)
+    }, 10000)
+  }, [dashRef])
 
   React.useEffect(() => {
     const dashPlayer = dashRef.current?.plyr;
@@ -144,13 +153,13 @@ const DashApp = () => {
   return (
     <div>
       <h1>Dash Usage</h1>
-      <UncontrolledLionPlyr ref={dashRef} />
+      <UncontrolledLionPlyr ref={timedRef} />
     </div>
   );
 }
 
 const App = () => {
-  const [state, setState] = React.useState('mp4');
+  const [state, setState] = React.useState('dash');
 
   return (
     <div>
