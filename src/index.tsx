@@ -1,5 +1,5 @@
 import React, {
-  useRef, useEffect, forwardRef, useMemo, useState, memo
+  useRef, useEffect, forwardRef, useMemo, useState, memo, MutableRefObject
 } from 'react';
 import Plyr from 'plyr';
 import Hls from 'hls.js';
@@ -24,28 +24,27 @@ export type HTMLPlyrVideoElement = HTMLVideoElement & { plyr?: Plyr }
 
 const LionPlyrDefaultFallback = memo(() => {
   return (
-    <div className="aspect-ratio-box">
-      <div className="aspect-ratio-box-inside">
-        <div className="lion-spinner-container">
-          <div className="lion-spinner lion-spinner-wave" />
-        </div>
-      </div>
+    <div className="lion-spinner-container">
+      <div className="lion-spinner lion-spinner-wave" />
     </div>
   )
 })
 
 export const UncontrolledLionPlyr = forwardRef<HTMLPlyrVideoElement | null, IUncontrolledPlayerProps>(({ fallback }, ref) => {
-  if (ref) {
-    return (
-      <div>
-        <video ref={ref} className="player-react plyr" />
-      </div>
-    );
-  }
+  const internalRef = ref as MutableRefObject<HTMLPlyrVideoElement | null>;
 
   return (
     <>
-      {fallback ?? <LionPlyrDefaultFallback />}
+      {
+        !internalRef?.current?.src && (
+          <>
+            {fallback ?? <LionPlyrDefaultFallback />}
+          </>
+        )
+      }
+      <div>
+        <video ref={ref} className="player-react plyr" />
+      </div>
     </>
   )
 });
