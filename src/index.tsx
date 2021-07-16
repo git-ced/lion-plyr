@@ -1,5 +1,5 @@
 import React, {
-  useRef, useEffect, forwardRef, useMemo, useState, memo, MutableRefObject
+  useRef, useEffect, forwardRef, useMemo, useState, memo,
 } from 'react';
 import Plyr from 'plyr';
 import Hls from 'hls.js';
@@ -8,6 +8,7 @@ import './styles.css';
 
 interface IUncontrolledPlayerProps {
   fallback?: React.ReactNode;
+  isLoading?: boolean;
 }
 
 declare global {
@@ -30,13 +31,11 @@ const LionPlyrDefaultFallback = memo(() => {
   )
 })
 
-export const UncontrolledLionPlyr = forwardRef<HTMLPlyrVideoElement | null, IUncontrolledPlayerProps>(({ fallback }, ref) => {
-  const internalRef = ref as MutableRefObject<HTMLPlyrVideoElement | null>;
-
+export const UncontrolledLionPlyr = forwardRef<HTMLPlyrVideoElement | null, IUncontrolledPlayerProps>(({ fallback, isLoading }, ref) => {
   return (
     <>
       {
-        !internalRef?.current?.src && (
+        isLoading && (
           <>
             {fallback ?? <LionPlyrDefaultFallback />}
           </>
@@ -276,7 +275,7 @@ export const LionPlyr = ({ source, options }: ILionPlyrProps) => {
   const ref = usePlyr({ source, options });
 
   return (
-    <UncontrolledLionPlyr ref={ref} />
+    <UncontrolledLionPlyr ref={ref} isLoading={!ref} />
   );
 };
 
@@ -284,7 +283,7 @@ export const LionHlsPlyr = ({ source, options }: ILionPlyrProps) => {
   const ref = useHlsPlyr({ source, options });
 
   return (
-    <UncontrolledLionPlyr ref={ref} />
+    <UncontrolledLionPlyr ref={ref} isLoading={!ref} />
   );
 };
 
@@ -292,6 +291,6 @@ export const LionDashPlyr = ({ source, options }: ILionPlyrProps) => {
   const ref = useDashPlyr({ source, options });
 
   return (
-    <UncontrolledLionPlyr ref={ref} />
+    <UncontrolledLionPlyr ref={ref} isLoading={!ref} />
   );
 };
