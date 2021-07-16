@@ -1,11 +1,13 @@
-import React, { useRef, useEffect, forwardRef, useMemo, useState } from 'react';
+import React, {
+  useRef, useEffect, forwardRef, useMemo, useState, memo
+} from 'react';
 import Plyr from 'plyr';
 import Hls from 'hls.js';
 import Dash from 'dashjs';
 import './styles.css';
 
-export interface IUncontrolledPlayerProps {
-  plyr: Plyr;
+interface IUncontrolledPlayerProps {
+  fallback?: React.ReactNode;
 }
 
 declare global {
@@ -19,12 +21,33 @@ export interface ILionPlyrProps {
 
 export type HTMLPlyrVideoElement = HTMLVideoElement & { plyr?: Plyr }
 
-export const UncontrolledLionPlyr = forwardRef<HTMLPlyrVideoElement | null>((_, ref) => {
+
+const LionPlyrDefaultFallback = memo(() => {
   return (
-    <div>
-      <video ref={ref} className="player-react plyr" />
+    <div className="aspect-ratio-box">
+      <div className="aspect-ratio-box-inside">
+        <div className="lion-spinner-container">
+          <div className="lion-spinner lion-spinner-wave" />
+        </div>
+      </div>
     </div>
-  );
+  )
+})
+
+export const UncontrolledLionPlyr = forwardRef<HTMLPlyrVideoElement | null, IUncontrolledPlayerProps>(({ fallback }, ref) => {
+  if (ref) {
+    return (
+      <div>
+        <video ref={ref} className="player-react plyr" />
+      </div>
+    );
+  }
+
+  return (
+    <>
+      {fallback ?? <LionPlyrDefaultFallback />}
+    </>
+  )
 });
 
 export const useHlsPlyr = ({ source, options }: ILionPlyrProps) => {
