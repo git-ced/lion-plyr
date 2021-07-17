@@ -100,7 +100,7 @@ export const useHlsPlyr = ({ source, options }: ILionPlyrProps) => {
         player.destroy();
       }
     }
-  }, [hls])
+  }, [hls, currentSource])
 
   useEffect(() => {
     let player: Plyr;
@@ -148,7 +148,7 @@ export const useHlsPlyr = ({ source, options }: ILionPlyrProps) => {
         player.destroy();
       }
     }
-  }, [hls, qualityOptions, defaultOptions]);
+  }, [hls, qualityOptions]);
 
   return ref;
 };
