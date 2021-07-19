@@ -91,7 +91,7 @@ export const useHlsPlyr = ({ source, options }: ILionPlyrProps) => {
         });
       }
     }
-  }, [hls, defaultOptions, currentSource])
+  }, [hls, currentSource])
 
   useEffect(() => {
     if (qualityOptions && ref.current) {
@@ -133,7 +133,7 @@ export const useHlsPlyr = ({ source, options }: ILionPlyrProps) => {
         hls.detachMedia();
       }
     }
-  }, [defaultOptions, hls, qualityOptions]);
+  }, [hls, qualityOptions]);
 
   return ref;
 };
@@ -179,7 +179,7 @@ export const useDashPlyr = ({ source, options }: ILionPlyrProps) => {
         })
       }
     }
-  }, [dash, currentSource, defaultOptions, options?.autoplay])
+  }, [dash, currentSource, options?.autoplay])
 
   useEffect(() => {
     if (qualityOptions && ref.current) {
@@ -213,7 +213,7 @@ export const useDashPlyr = ({ source, options }: ILionPlyrProps) => {
         dash.reset();
       }
     }
-  }, [dash, defaultOptions, qualityOptions]);
+  }, [dash, qualityOptions]);
 
   return ref;
 };
