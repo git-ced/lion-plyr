@@ -6,6 +6,7 @@ import {
   useHlsPlyr,
   usePlyr,
 } from 'lion-plyr';
+import 'lion-plyr/dist/lion-skin.min.css';
 
 const onTimeUpdate = (event: Plyr.PlyrEvent) => {
   const instance = event.detail.plyr;

@@ -11,7 +11,7 @@
   "dependencies": {
     "dashjs": "^4.0.0-npm",
     "hls.js": "^1.0.7",
-    "lion-plyr": "^0.7.6",
+    "lion-plyr": "^0.8.0",
     "next": "11.0.1",
     "plyr": "^3.6.8",
     "react": "17.0.2",
