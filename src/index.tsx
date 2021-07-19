@@ -50,14 +50,12 @@ export const UncontrolledLionPlyr = forwardRef<HTMLPlyrVideoElement | null, IUnc
 
 export const useHlsPlyr = ({ source, options }: ILionPlyrProps) => {
   const ref = useRef<HTMLPlyrVideoElement>(null);
-  const currentSource = source.sources[0];
   const hls = useMemo(() => new Hls(), []);
-  const defaultOptions: Plyr.Options = options ?? {};
+  const defaultOptions: Plyr.Options = useMemo(() => options ?? {}, [options]);
   const [qualityOptions, setQualityOptions] = useState<number[]>();
+  const currentSource = source.sources[0].src;
 
   useEffect(() => {
-    let player: Plyr;
-
     if (!window) {
       return;
     }
@@ -68,10 +66,9 @@ export const useHlsPlyr = ({ source, options }: ILionPlyrProps) => {
       if (!Hls.isSupported()) {
         const newPlayer = new Plyr('.player-react', defaultOptions);
 
-        player = newPlayer;
         ref.current.plyr = newPlayer;
       } else {
-        hls.loadSource(currentSource.src);
+        hls.loadSource(currentSource);
 
         hls.on(Hls.Events.MANIFEST_PARSED, () => {
           const availableQualities = [0, ...hls.levels.map((level) => level.height)]
@@ -94,17 +91,9 @@ export const useHlsPlyr = ({ source, options }: ILionPlyrProps) => {
         });
       }
     }
-
-    return () => {
-      if (player) {
-        player.destroy();
-      }
-    }
-  }, [hls, currentSource])
+  }, [hls, defaultOptions, currentSource])
 
   useEffect(() => {
-    let player: Plyr;
-
     if (qualityOptions && ref.current) {
       const newOptions: Plyr.Options = {
         ...defaultOptions,
@@ -133,7 +122,6 @@ export const useHlsPlyr = ({ source, options }: ILionPlyrProps) => {
 
       const newPlayer = new Plyr('.player-react', newOptions);
 
-      player = newPlayer;
       ref.current.plyr = newPlayer;
       hls.attachMedia(ref.current);
       window.hls = hls;
@@ -144,11 +132,8 @@ export const useHlsPlyr = ({ source, options }: ILionPlyrProps) => {
       if (hls && qualityOptions) {
         hls.detachMedia();
       }
-      if (player) {
-        player.destroy();
-      }
     }
-  }, [hls, qualityOptions]);
+  }, [defaultOptions, hls, qualityOptions]);
 
   return ref;
 };
@@ -157,7 +142,7 @@ export const useDashPlyr = ({ source, options }: ILionPlyrProps) => {
   const ref = useRef<HTMLPlyrVideoElement>(null);
   const dash = useMemo(() => Dash.MediaPlayer().create(), []);
   const currentSource = source.sources[0];
-  const defaultOptions: Plyr.Options = options ?? {};
+  const defaultOptions: Plyr.Options = useMemo(() => options ?? {}, [options]);
   const [qualityOptions, setQualityOptions] = useState<number[]>();
 
   useEffect(() => {
@@ -165,15 +150,12 @@ export const useDashPlyr = ({ source, options }: ILionPlyrProps) => {
       return;
     }
 
-    let player: Plyr;
-
     window.dashjs = window.dashjs || {};
 
     if (ref.current) {
       if (!Dash.supportsMediaSource) {
         const newPlayer = new Plyr('.player-react', defaultOptions);
 
-        player = newPlayer;
         ref.current.plyr = newPlayer;
       } else {
         dash.initialize(
@@ -197,17 +179,9 @@ export const useDashPlyr = ({ source, options }: ILionPlyrProps) => {
         })
       }
     }
-
-    return () => {
-      if (player) {
-        player.destroy();
-      }
-    }
-  }, [dash, currentSource, defaultOptions])
+  }, [dash, currentSource, defaultOptions, options?.autoplay])
 
   useEffect(() => {
-    let player: Plyr;
-
     if (qualityOptions && ref.current) {
       const newOptions: Plyr.Options = {
         ...defaultOptions,
@@ -231,7 +205,6 @@ export const useDashPlyr = ({ source, options }: ILionPlyrProps) => {
       }
 
       const newPlayer = new Plyr('.player-react', newOptions);
-      player = newPlayer;
       ref.current.plyr = newPlayer;
     }
 
@@ -239,11 +212,8 @@ export const useDashPlyr = ({ source, options }: ILionPlyrProps) => {
       if (dash && qualityOptions) {
         dash.reset();
       }
-      if (player) {
-        player.destroy();
-      }
     }
-  }, [dash, qualityOptions]);
+  }, [dash, defaultOptions, qualityOptions]);
 
   return ref;
 };
@@ -252,21 +222,13 @@ export const usePlyr = ({ source, options }: ILionPlyrProps) => {
   const ref = useRef<HTMLPlyrVideoElement>(null);
 
   useEffect(() => {
-    let player: Plyr;
     const newPlayer = new Plyr('.player-react', options ?? {});
     newPlayer.source = source;
 
     if (ref.current) {
-      player = newPlayer
       ref.current.plyr = newPlayer;
     }
-
-    return () => {
-      if (player) {
-        player.destroy();
-      }
-    }
-  }, [source]);
+  }, [options, source]);
 
   return ref;
 };
