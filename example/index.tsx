@@ -8,12 +8,22 @@ import {
   usePlyr,
 } from '../src';
 
-const videoSrc = {
+const youtubeSrc = {
   type: 'video',
   sources: [
     {
       src: 'yWtFb9LJs3o',
       provider: 'youtube'
+    }
+  ]
+};
+
+const vimeoSrc = {
+  type: 'video',
+  sources: [
+    {
+      src: 'https://vimeo.com/533559247',
+      provider: 'vimeo'
     }
   ]
 };
@@ -83,7 +93,7 @@ const HlsApp = () => {
 
 const YoutubeApp = () => {
   const youtubeRef = usePlyr({
-    source: videoSrc,
+    source: youtubeSrc,
   });
   const [loading, setLoading] = React.useState(true);
 
@@ -103,6 +113,32 @@ const YoutubeApp = () => {
     <div>
       <h1>Youtube Usage</h1>
       <UncontrolledLionPlyr ref={youtubeRef} isLoading={loading} />
+    </div>
+  );
+}
+
+const VimeoApp = () => {
+  const vimeoRef = usePlyr({
+    source: vimeoSrc,
+  });
+  const [loading, setLoading] = React.useState(true);
+
+  React.useEffect(() => {
+    const vimeoPlayer = vimeoRef.current?.plyr;
+
+    if (vimeoPlayer) {
+      setLoading(false);
+      vimeoPlayer.on('timeupdate', event => {
+        const instance = event.detail.plyr;
+        console.log(instance.currentTime);
+      });
+    }
+  })
+
+  return (
+    <div>
+      <h1>Vimeo Usage</h1>
+      <UncontrolledLionPlyr ref={vimeoRef} isLoading={loading} />
     </div>
   );
 }
@@ -160,7 +196,7 @@ const DashApp = () => {
 }
 
 const App = () => {
-  const [state, setState] = React.useState('dash');
+  const [state, setState] = React.useState('mp4');
 
   return (
     <div>
@@ -184,10 +220,15 @@ const App = () => {
           <YoutubeApp />
         )
       }
+      {
+        state === 'vimeo' && (
+          <VimeoApp />
+        )
+      }
       <div style={
         {
           display: 'grid',
-          gridTemplateColumns: 'repeat(4, 1fr)',
+          gridTemplateColumns: 'repeat(5, 1fr)',
           marginTop: '16px',
           gridColumnGap: '16px',
           height: '40px',
@@ -197,6 +238,7 @@ const App = () => {
         <button onClick={() => setState('hls')}>HLS Player</button>
         <button onClick={() => setState('dash')}>Dash Player</button>
         <button onClick={() => setState('youtube')}>Youtube Player</button>
+        <button onClick={() => setState('vimeo')}>Vimeo Player</button>
       </div>
     </div>
   );
