@@ -54,9 +54,10 @@ export const useHlsPlyr = ({ source, options }: ILionPlyrProps) => {
   const hls = useMemo(() => new Hls(), []);
   const defaultOptions: Plyr.Options = options ?? {};
   const [qualityOptions, setQualityOptions] = useState<number[]>();
-  const [player, setPlayer] = useState<Plyr>();
 
   useEffect(() => {
+    let player: Plyr;
+
     if (!window) {
       return;
     }
@@ -67,7 +68,7 @@ export const useHlsPlyr = ({ source, options }: ILionPlyrProps) => {
       if (!Hls.isSupported()) {
         const newPlayer = new Plyr('.player-react', defaultOptions);
 
-        setPlayer(newPlayer);
+        player = newPlayer;
         ref.current.plyr = newPlayer;
       } else {
         hls.loadSource(currentSource.src);
@@ -93,9 +94,17 @@ export const useHlsPlyr = ({ source, options }: ILionPlyrProps) => {
         });
       }
     }
+
+    return () => {
+      if (player) {
+        player.destroy();
+      }
+    }
   }, [hls, currentSource])
 
   useEffect(() => {
+    let player: Plyr;
+
     if (qualityOptions && ref.current) {
       const newOptions: Plyr.Options = {
         ...defaultOptions,
@@ -124,7 +133,7 @@ export const useHlsPlyr = ({ source, options }: ILionPlyrProps) => {
 
       const newPlayer = new Plyr('.player-react', newOptions);
 
-      setPlayer(newPlayer);
+      player = newPlayer;
       ref.current.plyr = newPlayer;
       hls.attachMedia(ref.current);
       window.hls = hls;
@@ -135,16 +144,11 @@ export const useHlsPlyr = ({ source, options }: ILionPlyrProps) => {
       if (hls && qualityOptions) {
         hls.detachMedia();
       }
-    }
-  }, [hls, qualityOptions]);
-
-  useEffect(() => {
-    return () => {
       if (player) {
         player.destroy();
       }
     }
-  }, [player]);
+  }, [hls, qualityOptions]);
 
   return ref;
 };
@@ -155,12 +159,13 @@ export const useDashPlyr = ({ source, options }: ILionPlyrProps) => {
   const currentSource = source.sources[0];
   const defaultOptions: Plyr.Options = options ?? {};
   const [qualityOptions, setQualityOptions] = useState<number[]>();
-  const [player, setPlayer] = useState<Plyr>();
 
   useEffect(() => {
     if (!window) {
       return;
     }
+
+    let player: Plyr;
 
     window.dashjs = window.dashjs || {};
 
@@ -168,7 +173,7 @@ export const useDashPlyr = ({ source, options }: ILionPlyrProps) => {
       if (!Dash.supportsMediaSource) {
         const newPlayer = new Plyr('.player-react', defaultOptions);
 
-        setPlayer(newPlayer);
+        player = newPlayer;
         ref.current.plyr = newPlayer;
       } else {
         dash.initialize(
@@ -192,9 +197,17 @@ export const useDashPlyr = ({ source, options }: ILionPlyrProps) => {
         })
       }
     }
+
+    return () => {
+      if (player) {
+        player.destroy();
+      }
+    }
   }, [dash, currentSource, defaultOptions])
 
   useEffect(() => {
+    let player: Plyr;
+
     if (qualityOptions && ref.current) {
       const newOptions: Plyr.Options = {
         ...defaultOptions,
@@ -218,7 +231,7 @@ export const useDashPlyr = ({ source, options }: ILionPlyrProps) => {
       }
 
       const newPlayer = new Plyr('.player-react', newOptions);
-      setPlayer(newPlayer);
+      player = newPlayer;
       ref.current.plyr = newPlayer;
     }
 
@@ -226,41 +239,34 @@ export const useDashPlyr = ({ source, options }: ILionPlyrProps) => {
       if (dash && qualityOptions) {
         dash.reset();
       }
-    }
-  }, [dash, qualityOptions]);
-
-  useEffect(() => {
-    return () => {
       if (player) {
         player.destroy();
       }
     }
-  }, [player]);
+  }, [dash, qualityOptions]);
 
   return ref;
 };
 
 export const usePlyr = ({ source, options }: ILionPlyrProps) => {
   const ref = useRef<HTMLPlyrVideoElement>(null);
-  const [player, setPlayer] = useState<Plyr>();
 
   useEffect(() => {
+    let player: Plyr;
     const newPlayer = new Plyr('.player-react', options ?? {});
     newPlayer.source = source;
 
     if (ref.current) {
-      setPlayer(newPlayer);
+      player = newPlayer
       ref.current.plyr = newPlayer;
     }
-  }, [source]);
 
-  useEffect(() => {
     return () => {
       if (player) {
         player.destroy();
       }
     }
-  }, [player])
+  }, [source]);
 
   return ref;
 };

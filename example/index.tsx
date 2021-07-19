@@ -39,9 +39,6 @@ const dashSrc = {
   ]
 };
 
-const switchSrc = "https://bitmovin-a.akamaihd.net/content/MI201109210084_1/mpds/f08e80da-bf1d-4e3d-8899-f0f6155f6efa.mpd";
-const switchAlternativeSrc = "https://dash.akamaized.net/dash264/TestCasesHD/2b/qualcomm/1/MultiResMPEG2.mpd";
-
 const mp4Src = {
   type: 'video',
   sources: [
@@ -162,87 +159,46 @@ const DashApp = () => {
   );
 }
 
-const SwitchingSourceApp = () => {
-  const [loading, setLoading] = React.useState(true);
-  const [toggle, setToggle] = React.useState(false);
-
-  const dashRef = useDashPlyr({
-    source: {
-      type: 'video',
-      sources: [
-        {
-          src: toggle ? switchSrc : switchAlternativeSrc,
-          type: 'application/dash+xml',
-        }
-      ]
-    },
-  })
-
-  React.useEffect(() => {
-    const dashPlayer = dashRef.current?.plyr;
-
-    if (dashPlayer) {
-      setLoading(false);
-    }
-  })
-
-  return (
-    <div>
-      <h1>Switching Source Usage</h1>
-      <UncontrolledLionPlyr ref={dashRef} isLoading={loading} />
-      <button onClick={() => setToggle((current) => !current)}>Switch Source</button>
-    </div>
-  );
-}
-
 const App = () => {
   const [state, setState] = React.useState('dash');
 
   return (
-    <>
-      <div>
+    <div>
+      {
+        state === 'mp4' && (
+          <Mp4App />
+        )
+      }
+      {
+        state === 'hls' && (
+          <HlsApp />
+        )
+      }
+      {
+        state === 'dash' && (
+          <DashApp />
+        )
+      }
+      {
+        state === 'youtube' && (
+          <YoutubeApp />
+        )
+      }
+      <div style={
         {
-          state === 'mp4' && (
-            <Mp4App />
-          )
+          display: 'grid',
+          gridTemplateColumns: 'repeat(4, 1fr)',
+          marginTop: '16px',
+          gridColumnGap: '16px',
+          height: '40px',
         }
-        {
-          state === 'hls' && (
-            <HlsApp />
-          )
-        }
-        {
-          state === 'dash' && (
-            <DashApp />
-          )
-        }
-        {
-          state === 'youtube' && (
-            <YoutubeApp />
-          )
-        }
-        {
-          state === 'switching' && (
-            <SwitchingSourceApp />
-          )
-        }
-        <div style={
-          {
-            display: 'grid',
-            gridTemplateColumns: 'repeat(5, 1fr)',
-            marginTop: '16px',
-            gridColumnGap: '16px',
-            height: '40px',
-          }
-        }>
-          <button onClick={() => setState('mp4')}>MP4 Player</button>
-          <button onClick={() => setState('hls')}>HLS Player</button>
-          <button onClick={() => setState('dash')}>Dash Player</button>
-          <button onClick={() => setState('youtube')}>Youtube Player</button>
-          <button onClick={() => setState('switching')}>Switching Sources</button>
-        </div>
+      }>
+        <button onClick={() => setState('mp4')}>MP4 Player</button>
+        <button onClick={() => setState('hls')}>HLS Player</button>
+        <button onClick={() => setState('dash')}>Dash Player</button>
+        <button onClick={() => setState('youtube')}>Youtube Player</button>
       </div>
-    </>
+    </div>
   );
 };
 
