@@ -63,7 +63,20 @@ export const useHlsPlyr = ({ source, options }: ILionPlyrProps) => {
     window.hls = window.hls || {};
 
     if (ref.current) {
-      if (!Hls.isSupported()) {
+      if (ref.current.canPlayType('application/vnd.apple.mpegURL')) {
+        const newPlayer = new Plyr('.player-react', options ?? {});
+        newPlayer.source = {
+          ...source,
+          sources: [
+            {
+              ...source.sources[0],
+              type: 'application/vnd.apple.mpegURL',
+            }
+          ]
+        };
+
+        ref.current.plyr = newPlayer;
+      } else if (!Hls.isSupported()) {
         const newPlayer = new Plyr('.player-react', defaultOptions);
 
         ref.current.plyr = newPlayer;
