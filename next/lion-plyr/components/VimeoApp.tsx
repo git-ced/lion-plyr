@@ -65,6 +65,9 @@ const RefPlayer = () => {
         }
       ]
     },
+    options: {
+      autoplay: true,
+    }
   })
   const [loading, setLoading] = React.useState(true);
 
