@@ -48,6 +48,15 @@
   ],
   "author": "Prince Neil Cedrick Castro",
   "module": "dist/lion-plyr.esm.js",
+  "description": "A simple Lion-themed HTML5, YouTube and Vimeo player (Plyr) for ReactJS",
+  "repository": {
+    "url": "https://github.com/git-ced/lion-plyr.git",
+    "type": "git"
+  },
+  "homepage": "https://lion-plyr.netlify.app/",
+  "bugs": {
+    "url": "https://github.com/git-ced/lion-plyr/issues"
+  },
   "private": false,
   "size-limit": [
     {
