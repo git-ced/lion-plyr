@@ -6,7 +6,7 @@ import {
   useHlsPlyr,
   useDashPlyr,
   usePlyr,
-} from '../src';
+} from '../../src';
 
 const youtubeSrc = {
   type: 'video',

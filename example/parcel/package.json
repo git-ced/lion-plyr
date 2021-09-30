@@ -1,5 +1,5 @@
 {
-  "name": "example",
+  "name": "lion-plyr-parcel-example",
   "version": "1.0.0",
   "main": "dist/index.html",
   "license": "MIT",
@@ -15,9 +15,9 @@
     "react-app-polyfill": "^1.0.0"
   },
   "alias": {
-    "react": "../node_modules/react",
-    "react-dom": "../node_modules/react-dom/profiling",
-    "scheduler/tracing": "../node_modules/scheduler/tracing-profiling"
+    "react": "../../node_modules/react",
+    "react-dom": "../../node_modules/react-dom/profiling",
+    "scheduler/tracing": "../../node_modules/scheduler/tracing-profiling"
   },
   "devDependencies": {
     "@types/react": "^16.9.11",
