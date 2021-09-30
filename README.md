@@ -1,160 +1,317 @@
-# TSDX React User Guide
+# lion-plyr
+> A simple Lion-themed HTML5, YouTube and Vimeo player (Plyr) for ReactJS
 
-Congrats! You just saved yourself hours of work by bootstrapping this project with TSDX. Let’s get you oriented with what’s here and how to use it.
+[![NPM](https://img.shields.io/npm/v/lion-plyr.svg)](https://www.npmjs.com/package/lion-plyr)
+![npm bundle size (scoped)](https://img.shields.io/bundlephobia/min/lion-plyr)
+![npm bundle size (scoped version)](https://img.shields.io/bundlephobia/minzip/lion-plyr)
+![Libraries.io dependency status for latest release, scoped npm package](https://img.shields.io/librariesio/release/npm/lion-plyr)
+![NPM](https://img.shields.io/npm/l/lion-plyr)
 
-> This TSDX setup is meant for developing React component libraries (not apps!) that can be published to NPM. If you’re looking to build a React-based app, you should use `create-react-app`, `razzle`, `nextjs`, `gatsby`, or `react-static`.
+## Table of Contents
+ - [Installation](#installation)
+ - [Setup](#setup)
+ - [Usage](#usage)
+ - [Authors](#authors)
+ - [Changelog](#changelog)
+ - [License](#license)
 
-> If you’re new to TypeScript and React, checkout [this handy cheatsheet](https://github.com/sw-yx/react-typescript-cheatsheet/)
+ <!-- toc -->
 
-## Commands
+## Installation
 
-TSDX scaffolds your new library inside `/src`, and also sets up a [Parcel-based](https://parceljs.org) playground for it inside `/example`.
+This library is available through the [npm registry](https://www.npmjs.com/).
 
-The recommended workflow is to run TSDX in one terminal:
-
+NPM
 ```bash
-npm start # or yarn start
+$ npm -i lion-plyr
 ```
 
-This builds to `/dist` and runs the project in watch mode so any edits you save inside `src` causes a rebuild to `/dist`.
-
-Then run the example inside another:
-
+Yarn
 ```bash
-cd example
-npm i # or yarn to install dependencies
-npm start # or yarn start
+$ yarn add lion-plyr
 ```
 
-The default example imports and live reloads whatever is in `/dist`, so if you are seeing an out of date component, make sure TSDX is running in watch mode like we recommend above. **No symlinking required**, we use [Parcel's aliasing](https://parceljs.org/module_resolution.html#aliases).
+## Setup
 
-To do a one-off build, use `npm run build` or `yarn build`.
+Start using it by importing the library first.
 
-To run tests, use `npm test` or `yarn test`.
-
-## Configuration
-
-Code quality is set up for you with `prettier`, `husky`, and `lint-staged`. Adjust the respective fields in `package.json` accordingly.
-
-### Jest
-
-Jest tests are set up to run with `npm test` or `yarn test`.
-
-### Bundle analysis
-
-Calculates the real cost of your library using [size-limit](https://github.com/ai/size-limit) with `npm run size` and visulize it with `npm run analyze`.
-
-#### Setup Files
-
-This is the folder structure we set up for you:
-
-```txt
-/example
-  index.html
-  index.tsx       # test your component here in a demo app
-  package.json
-  tsconfig.json
-/src
-  index.tsx       # EDIT THIS
-/test
-  blah.test.tsx   # EDIT THIS
-.gitignore
-package.json
-README.md         # EDIT THIS
-tsconfig.json
+### CommonJS
+```javascript
+const LionPlyr = require('lion-plyr');
 ```
 
-#### React Testing Library
+or 
 
-We do not set up `react-testing-library` for you yet, we welcome contributions and documentation on this.
+### ES6
+```javascript
+import { LionPlyr } from 'lion-plyr';
+```
 
-### Rollup
+The `LionPlyr` component requires the following CSS for styling:
 
-TSDX uses [Rollup](https://rollupjs.org) as a bundler and generates multiple rollup configs for various module formats and build settings. See [Optimizations](#optimizations) for details.
+**Using link tags**
+```html
+<link href="https://unpkg.com/lion-plyr@1.0.0/dist/lion-skin.min.css" rel="stylesheet">
+```
 
-### TypeScript
+**Using import**
+```javascript
+import 'lion-plyr/dist/lion-skin.min.css';
+```
 
-`tsconfig.json` is set up to interpret `dom` and `esnext` types, as well as `react` for `jsx`. Adjust according to your needs.
+## Usage
 
-## Continuous Integration
+**Video playback using Solid Plyr Player**
+```javascript
+import { LionPlyr } from 'lion-plyr';
 
-### GitHub Actions
+const SOURCE = {
+  type: 'video',
+  sources: [
+    {
+      src: 'https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-720p.mp4',
+      type: 'video/mp4',
+      size: 720,
+    },
+    {
+      src: 'https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-1080p.mp4',
+      type: 'video/mp4',
+      size: 1080,
+    }
+  ]
+}
 
-Two actions are added by default:
+const OPTIONS = {
+  autoplay: true,
+  muted: true,
+}
 
-- `main` which installs deps w/ cache, lints, tests, and builds on all pushes against a Node and OS matrix
-- `size` which comments cost comparison of your library on every pull request using [`size-limit`](https://github.com/ai/size-limit)
-
-## Optimizations
-
-Please see the main `tsdx` [optimizations docs](https://github.com/palmerhq/tsdx#optimizations). In particular, know that you can take advantage of development-only optimizations:
-
-```js
-// ./types/index.d.ts
-declare var __DEV__: boolean;
-
-// inside your code...
-if (__DEV__) {
-  console.log('foo');
+export default function Player() {
+  return (
+    <LionPlyr source={SOURCE} options={OPTIONS} />
+  );
 }
 ```
 
-You can also choose to install and use [invariant](https://github.com/palmerhq/tsdx#invariant) and [warning](https://github.com/palmerhq/tsdx#warning) functions.
+**Uncontrolled Solid Plyr Player**
+```javascript
+import { UncontrolledLionPlyr, usePlyr } from 'lion-plyr';
+import { useEffect } from 'react';
 
-## Module Formats
+const SOURCE = {
+  // ...
+}
 
-CJS, ESModules, and UMD module formats are supported.
+const OPTIONS = {
+  // ...
+}
 
-The appropriate paths are configured in `package.json` and `dist/index.js` accordingly. Please report if any issues are found.
+export default function Player() {
+  const [ref, setRef] = usePlyr({ 
+    source: SOURCE,
+    options: OPTIONS,
+  });
 
-## Deploying the Example Playground
+  useEffect(() => {
+    const player = ref()?.plyr;
 
-The Playground is just a simple [Parcel](https://parceljs.org) app, you can deploy it anywhere you would normally deploy that. Here are some guidelines for **manually** deploying with the Netlify CLI (`npm i -g netlify-cli`):
+    if (player) {
+      player.on('timeupdate', event => {
+        // Log current time while playing the playback
+        console.log(event.detail.plyr.currentTime);
+      });
+    }
+  })
 
-```bash
-cd example # if not already in the example folder
-npm run build # builds to dist
-netlify deploy # deploy the dist folder
+  return (
+    <UncontrolledLionPlyr ref={setRef} />
+  );
+}
 ```
 
-Alternatively, if you already have a git repo connected, you can set up continuous deployment with Netlify:
+**Play YouTube Videos using Solid Plyr**
+```javascript
+import { LionPlyr } from 'lion-plyr';
 
-```bash
-netlify init
-# build command: yarn build && cd example && yarn && yarn build
-# directory to deploy: example/dist
-# pick yes for netlify.toml
+const SOURCE = {
+  type: 'video',
+  sources: [
+    {
+      src: 'yWtFb9LJs3o',
+      provider: 'youtube'
+    }
+  ]
+}
+
+const OPTIONS = {
+  // ...
+}
+
+export default function Player() {
+  return (
+    <LionPlyr source={SOURCE} options={OPTIONS} />
+  );
+}
 ```
 
-## Named Exports
+**Play Vimeo Videos using Solid Plyr**
+```javascript
+import { LionPlyr } from 'lion-plyr';
 
-Per Palmer Group guidelines, [always use named exports.](https://github.com/palmerhq/typescript#exports) Code split inside your React app instead of your React library.
+const SOURCE = {
+  type: 'video',
+  sources: [
+    {
+      src: 'https://vimeo.com/533559247',
+      provider: 'vimeo'
+    }
+  ]
+}
 
-## Including Styles
+const OPTIONS = {
+  // ...
+}
 
-There are many ways to ship styles, including with CSS-in-JS. TSDX has no opinion on this, configure how you like.
-
-For vanilla CSS, you can include it at the root directory and add it to the `files` section in your `package.json`, so that it can be imported separately by your users and run through their bundler's loader.
-
-## Publishing to NPM
-
-We recommend using [np](https://github.com/sindresorhus/np).
-
-## Usage with Lerna
-
-When creating a new package with TSDX within a project set up with Lerna, you might encounter a `Cannot resolve dependency` error when trying to run the `example` project. To fix that you will need to make changes to the `package.json` file _inside the `example` directory_.
-
-The problem is that due to the nature of how dependencies are installed in Lerna projects, the aliases in the example project's `package.json` might not point to the right place, as those dependencies might have been installed in the root of your Lerna project.
-
-Change the `alias` to point to where those packages are actually installed. This depends on the directory structure of your Lerna project, so the actual path might be different from the diff below.
-
-```diff
-   "alias": {
--    "react": "../node_modules/react",
--    "react-dom": "../node_modules/react-dom"
-+    "react": "../../../node_modules/react",
-+    "react-dom": "../../../node_modules/react-dom"
-   },
+export default function Player() {
+  return (
+    <LionPlyr source={SOURCE} options={OPTIONS} />
+  );
+}
 ```
 
-An alternative to fixing this problem would be to remove aliases altogether and define the dependencies referenced as aliases as dev dependencies instead. [However, that might cause other problems.](https://github.com/palmerhq/tsdx/issues/64)
+**Video Playback with HLS using Solid Plyr**
+```javascript
+import { SolidHlsPlyr } from 'lion-plyr';
+
+const SOURCE = {
+  type: 'video',
+  sources: [
+    {
+      src:
+        'https://bitmovin-a.akamaihd.net/content/playhouse-vr/m3u8s/105560.m3u8',
+      type: 'application/x-mpegURL'
+    }
+  ]
+}
+
+const OPTIONS = {
+  // ...
+}
+
+export default function Player() {
+  return (
+    <SolidHlsPlyr source={SOURCE} options={OPTIONS} />
+  );
+}
+```
+
+**Uncontrolled Video Playback with HLS using Solid Plyr**
+```javascript
+import { UncontrolledLionPlyr, useHlsPlyr } from 'lion-plyr';
+import { useEffect } from 'react';
+
+const SOURCE = {
+  // ...
+}
+
+const OPTIONS = {
+  // ...
+}
+
+export default function Player() {
+  const [ref, setRef] = useHlsPlyr({ 
+    source: SOURCE,
+    options: OPTIONS,
+  });
+
+  useEffect(() => {
+    const player = ref()?.plyr;
+
+    if (player) {
+      player.on('timeupdate', event => {
+        // Log current time while playing the playback
+        console.log(event.detail.plyr.currentTime);
+      });
+    }
+  })
+
+  return (
+    <UncontrolledLionPlyr ref={setRef} />
+  );
+}
+```
+
+**Video Playback with Dash using Solid Plyr**
+```javascript
+import { SolidDashPlyr } from 'lion-plyr';
+
+const SOURCE = {
+  type: 'video',
+  sources: [
+    {
+      src: 'https://bitmovin-a.akamaihd.net/content/MI201109210084_1/mpds/f08e80da-bf1d-4e3d-8899-f0f6155f6efa.mpd',
+      type: 'application/dash+xml',
+    }
+  ]
+}
+
+const OPTIONS = {
+  // ...
+}
+
+export default function Player() {
+  return (
+    <SolidDashPlyr source={SOURCE} options={OPTIONS} />
+  );
+}
+```
+
+**Uncontrolled Video Playback with Dash using Solid Plyr**
+```javascript
+import { UncontrolledLionPlyr, useDashPlyr } from 'lion-plyr';
+import { useEffect } from 'react';
+
+const SOURCE = {
+  // ...
+}
+
+const OPTIONS = {
+  // ...
+}
+
+export default function Player() {
+  const [ref, setRef] = useDashPlyr({ 
+    source: SOURCE,
+    options: OPTIONS,
+  });
+
+  useEffect(() => {
+    const player = ref()?.plyr;
+
+    if (player) {
+      player.on('timeupdate', event => {
+        // Log current time while playing the playback
+        console.log(event.detail.plyr.currentTime);
+      });
+    }
+  })
+
+  return (
+    <UncontrolledLionPlyr ref={setRef} />
+  );
+}
+```
+
+## Authors
+
+- [Prince Neil Cedrick Castro](https://github.com/git-ced/) - Initial work
+
+See also the list of [contributors](https://github.com/git-ced/lion-plyr/contributors) who participated in this project.
+
+## Changelog
+
+[Changelog](https://github.com/git-ced/lion-plyr/releases)
+
+## License
+
+  [MIT](LICENSE)
