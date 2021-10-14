@@ -8,7 +8,7 @@ import useDashPlyr from "../hooks/useDashPlyr";
 import UncontrolledLionPlyr from "../UncontrolledLionPlyr";
 
 // ANCHOR Types
-import { LionPlyrProps } from "../UncontrolledLionPlyr/index.d";
+import { LionPlyrProps } from "../UncontrolledLionPlyr";
 
 export const LionDashPlyr = ({ source, options }: LionPlyrProps) => {
   const ref = useDashPlyr({ source, options });

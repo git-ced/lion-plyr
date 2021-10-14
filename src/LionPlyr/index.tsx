@@ -8,7 +8,7 @@ import usePlyr from "../hooks/usePlyr";
 import UncontrolledLionPlyr from "../UncontrolledLionPlyr";
 
 // ANCHOR Types
-import { LionPlyrProps } from "../UncontrolledLionPlyr/index.d";
+import { LionPlyrProps } from "../UncontrolledLionPlyr";
 
 const LionPlyr = ({ source, options }: LionPlyrProps) => {
   const ref = usePlyr({ source, options });

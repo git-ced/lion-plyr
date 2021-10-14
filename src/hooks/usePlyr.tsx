@@ -5,7 +5,7 @@ import { useRef, useEffect } from 'react';
 import Plyr from 'plyr';
 
 // ANCHOR Types
-import { LionPlyrProps, HTMLPlyrVideoElement } from '../UncontrolledLionPlyr/index.d';
+import { LionPlyrProps, HTMLPlyrVideoElement } from '../UncontrolledLionPlyr';
 
 const usePlyr = ({ source, options }: LionPlyrProps) => {
   const ref = useRef<HTMLPlyrVideoElement>(null);

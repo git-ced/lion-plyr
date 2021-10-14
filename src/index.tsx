@@ -17,7 +17,7 @@ export type {
   UncontrolledPlayerProps,
   LionPlyrProps,
   HTMLPlyrVideoElement,
-} from './UncontrolledLionPlyr/index.d';
+} from './UncontrolledLionPlyr';
 
 
 

@@ -10,7 +10,7 @@ import Plyr from 'plyr';
 import Hls from 'hls.js';
 
 // ANCHOR Types
-import { LionPlyrProps, HTMLPlyrVideoElement } from '../UncontrolledLionPlyr/index.d';
+import { LionPlyrProps, HTMLPlyrVideoElement } from '../UncontrolledLionPlyr';
 
 declare global {
   interface Window { hls: Hls; }

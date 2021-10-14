@@ -10,7 +10,7 @@ import Plyr from 'plyr';
 import Dash from 'dashjs';
 
 // ANCHOR Types
-import { LionPlyrProps, HTMLPlyrVideoElement } from '../UncontrolledLionPlyr/index.d';
+import { LionPlyrProps, HTMLPlyrVideoElement } from '../UncontrolledLionPlyr';
 
 const useDashPlyr = ({ source, options }: LionPlyrProps) => {
   const ref = useRef<HTMLPlyrVideoElement>(null);
