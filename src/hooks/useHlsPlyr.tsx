@@ -46,6 +46,7 @@ const useHlsPlyr = ({ source, options }: LionPlyrProps) => {
         ref.current.plyr = newPlayer;
       } else if (!Hls.isSupported()) {
         const newPlayer = new Plyr('.player-react', defaultOptions);
+        newPlayer.source = source;
 
         ref.current.plyr = newPlayer;
       } else {

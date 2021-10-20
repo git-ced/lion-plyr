@@ -29,6 +29,7 @@ const useDashPlyr = ({ source, options }: LionPlyrProps) => {
     if (ref.current) {
       if (!Dash.supportsMediaSource) {
         const newPlayer = new Plyr('.player-react', defaultOptions);
+        newPlayer.source = source;
 
         ref.current.plyr = newPlayer;
       } else {
