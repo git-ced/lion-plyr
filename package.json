@@ -20,7 +20,9 @@
     "analyze": "size-limit --why"
   },
   "peerDependencies": {
-    "react": ">=16"
+    "react": ">=16",
+    "dashjs": "^4.3.0",
+    "hls.js": "^1.1.5"
   },
   "husky": {
     "hooks": {
@@ -86,8 +88,8 @@
     "typescript": "^4.3.5"
   },
   "dependencies": {
-    "dashjs": "^4.0.0-npm",
-    "hls.js": "^1.0.7",
+    "dashjs": "^4.3.0",
+    "hls.js": "^1.1.5",
     "plyr": "^3.6.8"
   },
   "jest": {
