@@ -1,4 +1,4 @@
-r/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable react-hooks/exhaustive-deps */
 import Plyr from 'plyr';
 import { useState, useEffect } from 'react';
 import {
