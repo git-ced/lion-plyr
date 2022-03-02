@@ -54,7 +54,7 @@ const useDashPlyr = ({ source, options }: LionPlyrProps) => {
         })
       }
     }
-  }, [dash, currentSource, options?.autoplay])
+  }, [dash, currentSource.src, options?.autoplay])
 
   useEffect(() => {
     if (qualityOptions && ref.current) {

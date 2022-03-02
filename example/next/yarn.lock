@@ -849,18 +849,6 @@ damerau-levenshtein@^1.0.6:
   resolved "https://registry.yarnpkg.com/damerau-levenshtein/-/damerau-levenshtein-1.0.7.tgz#64368003512a1a6992593741a09a9d31a836f55d"
   integrity sha512-VvdQIPGdWP0SqFXghj79Wf/5LArmreyMsGLa6FG6iC4t3j7j5s71TrwWmT/4akbDQIqjfACkLZmjXhA7g2oUZw==
 
-dashjs@^4.0.0-npm:
-  version "4.0.0-npm"
-  resolved "https://registry.yarnpkg.com/dashjs/-/dashjs-4.0.0-npm.tgz#8e19dd6b3235bb10c283c619b6124e1b151d80ff"
-  integrity sha512-J+4Y0YrtTbxdn91LUz4W7Qd8ih9N+rz2YKWDM6o/X3UTSZ3EFA3amA2ROZfLhIyEPvz7Z62VyFWnfis7D3xhiA==
-  dependencies:
-    codem-isoboxer "0.3.6"
-    es6-promise "^4.2.8"
-    fast-deep-equal "2.0.1"
-    html-entities "^1.2.1"
-    imsc "^1.0.2"
-    localforage "^1.7.1"
-
 dashjs@^4.3.0:
   version "4.3.0"
   resolved "https://registry.yarnpkg.com/dashjs/-/dashjs-4.3.0.tgz#cccda5a490cabf6c3b48aa887ec8c8ac0df1a233"
@@ -1577,11 +1565,6 @@ he@1.2.0:
   resolved "https://registry.yarnpkg.com/he/-/he-1.2.0.tgz#84ae65fa7eafb165fddb61566ae14baf05664f0f"
   integrity sha512-F/1DnUGPopORZi0ni+CvrCgHQ5FyEAHRLSApuYWMmrbSwoN2Mn/7k+Gl38gJnR7yyDZk6WLXwiGod1JOWNDKGw==
 
-hls.js@^1.0.7:
-  version "1.0.7"
-  resolved "https://registry.yarnpkg.com/hls.js/-/hls.js-1.0.7.tgz#b4ab75e7a46650d02245a1da091efd15f07d16eb"
-  integrity sha512-NsGaksvOuYNyTmu/w239EtYFMadFzIoDkmStc1FDRcrGmvxOfMGKad/hLj4NHoE8H1S+Q8dT7HufMJJ6yiht7g==
-
 hls.js@^1.1.5:
   version "1.1.5"
   resolved "https://registry.yarnpkg.com/hls.js/-/hls.js-1.1.5.tgz#923a8a8cfdf09542578696d47c8ae435da981ffd"
@@ -1982,13 +1965,13 @@ lie@3.1.1:
   dependencies:
     immediate "~3.0.5"
 
-lion-plyr@^1.0.3:
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/lion-plyr/-/lion-plyr-1.0.3.tgz#bfaf567c8fe9539a7c8ab18320fcee18abcfdd70"
-  integrity sha512-B5mBQb/STCpp39NpJbZnbci9kSk0XM8QmMTqCw3IUqMhg14qSOPANMG7yPXwvts2W9V6skbyics/u/X1mLPiSQ==
+lion-plyr@^1.0.4:
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/lion-plyr/-/lion-plyr-1.0.4.tgz#b3b72a8bef63437416387cc6a58303356c49f226"
+  integrity sha512-eWPDQ7bKIhL7FYNEHauo+aXRSyYjCFld2xdZS6gcidEyO67Lx0JNDcZTEFWJu52IyPZtEeD3lVXo2jqJL2VG5w==
   dependencies:
-    dashjs "^4.0.0-npm"
-    hls.js "^1.0.7"
+    dashjs "^4.3.0"
+    hls.js "^1.1.5"
     plyr "^3.6.8"
 
 load-json-file@^4.0.0:
