@@ -1965,10 +1965,10 @@ lie@3.1.1:
   dependencies:
     immediate "~3.0.5"
 
-lion-plyr@^1.0.4:
-  version "1.0.4"
-  resolved "https://registry.yarnpkg.com/lion-plyr/-/lion-plyr-1.0.4.tgz#b3b72a8bef63437416387cc6a58303356c49f226"
-  integrity sha512-eWPDQ7bKIhL7FYNEHauo+aXRSyYjCFld2xdZS6gcidEyO67Lx0JNDcZTEFWJu52IyPZtEeD3lVXo2jqJL2VG5w==
+lion-plyr@^1.0.5:
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/lion-plyr/-/lion-plyr-1.0.5.tgz#0e46ebe9160605f6389dda7ccb5c3a2d919aa202"
+  integrity sha512-g/IcJcpGv4lwoKid7TL+0UqGw4+cZWr5WKzC1ICPk2+zM37rnFSobfGCDQdGpoi4C1KKH8tOS2GW+X31xh/3qw==
   dependencies:
     dashjs "^4.3.0"
     hls.js "^1.1.5"
